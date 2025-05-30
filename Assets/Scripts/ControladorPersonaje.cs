@@ -17,6 +17,8 @@ public class ControladorPersonaje : MonoBehaviour
     private float horizontalAxis;
     private float verticalAxis;
 
+    public float rangoInteract;
+
     private new Transform camera;
     public Vector2 sens = new Vector2(1f, 1f);
 
@@ -32,6 +34,7 @@ public class ControladorPersonaje : MonoBehaviour
     {
         Move();
         Watch();
+        Interact();
     }
 
 
@@ -87,7 +90,28 @@ public class ControladorPersonaje : MonoBehaviour
             movementVelocity.y += gravityScale * Time.deltaTime;
         }
 
-        // Aplicar movimiento final
         characterController.Move(movementVelocity * Time.deltaTime);
+    }
+    
+    public void Interact()
+    {
+        if (Input.GetKeyDown(KeyCode.E)) 
+        {
+            Vector3 centroPantalla = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+
+            Vector3 mundoCentro = Camera.main.ScreenToWorldPoint(centroPantalla);
+
+            Ray ray = Camera.main.ScreenPointToRay(centroPantalla);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, rangoInteract))
+            {
+                IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();
+                if (interactuable != null)
+                {
+                    interactuable.Interact();
+                }
+            }
+        }
     }
 }
