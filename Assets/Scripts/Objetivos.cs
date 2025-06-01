@@ -16,6 +16,7 @@ public class Objetivos : MonoBehaviour
         cabaña2.color = Color.white;
         cabaña3.fontStyle = FontStyles.Normal;
         cabaña3.color = Color.white;
+
     }
 
     // Update is called once per frame
