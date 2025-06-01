@@ -20,6 +20,7 @@ public class ControladorPersonaje : MonoBehaviour
     public float rangoInteract;
 
     public TextMeshProUGUI textInteraction;
+    public TextMeshProUGUI textBarra;
 
     private new Transform camera;
     public Vector2 sens = new Vector2(1f, 1f);
@@ -31,12 +32,21 @@ public class ControladorPersonaje : MonoBehaviour
     //posecion de objetos
     public bool barra = false;
 
+    //arma
+
+    public bool canon;
+    public bool culata;
+    public bool bala;
     
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         camera = transform.Find("Camara");
         Cursor.lockState = CursorLockMode.Locked;
+
+        canon = false;
+        culata = false;
+        bala = false;
     }
 
     void Update()
@@ -44,16 +54,6 @@ public class ControladorPersonaje : MonoBehaviour
         Move();
         Watch();
         Interact();
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Barra"))
-        {
-            barra = true;
-            Debug.Log("Gongo");
-            Destroy(other.gameObject);
-        }
     }
 
     public void Watch()
@@ -83,14 +83,35 @@ public class ControladorPersonaje : MonoBehaviour
         if (Physics.Raycast(ray, out hit, rangoInteract))
         {
             IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();
-            if (interactuable != null)
+            if (hit.collider.GetComponent<Door>())
             {
-                textInteraction.gameObject.SetActive(true);
+                if (barra)
+                {
+                    if (interactuable != null)
+                    {
+                        textInteraction.gameObject.SetActive(true);
+                    }
+                }
+                else
+                {
+                    if (interactuable != null)
+                    {
+                        textBarra.gameObject.SetActive(true);
+                    }
+                }
+            } else
+            {
+                if (interactuable != null)
+                {
+                    textInteraction.gameObject.SetActive(true);
+                }
             }
+
         }
         else
         {
             textInteraction.gameObject.SetActive(false);
+            textBarra.gameObject.SetActive(false);
         }
 
     }
@@ -129,7 +150,7 @@ public class ControladorPersonaje : MonoBehaviour
     
     public void Interact()
     {
-        if (Input.GetKeyDown(KeyCode.E)) 
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (Physics.Raycast(ray, out hit, rangoInteract))
             {

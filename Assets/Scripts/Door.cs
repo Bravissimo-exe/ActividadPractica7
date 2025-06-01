@@ -4,14 +4,20 @@ public class Door : MonoBehaviour, IInteractuable
 {
     public bool open;
 
+    public ControladorPersonaje player;
+
     public GameObject pivot;
 
     public float anguloFinal = 90f;
-    public float velocidad = 1f;
+    private float velocidad = 6f;
 
     public float anguloInicial = 0f;
     private float anguloActual;
 
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<ControladorPersonaje>();
+    }
     void Update()
     {
         float objetivoAngulo = open ? anguloFinal : anguloInicial;
@@ -22,6 +28,9 @@ public class Door : MonoBehaviour, IInteractuable
 
     public void Interact()
     {
-        open = !open;
+        if (player.barra)
+        {
+            open = !open;
+        }
     }
 }
