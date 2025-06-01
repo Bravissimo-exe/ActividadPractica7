@@ -22,6 +22,9 @@ public class ControladorPersonaje : MonoBehaviour
     private new Transform camera;
     public Vector2 sens = new Vector2(1f, 1f);
 
+    //posecion de objetos
+    public bool barra = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +40,16 @@ public class ControladorPersonaje : MonoBehaviour
         Interact();
     }
 
-
-
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.tag);
+        if (other.gameObject.CompareTag("Barra"))
+        {
+            barra = true;
+            Debug.Log("Gongo");
+            Destroy(other.gameObject);
+        }
+    }
 
     public void Watch()
     {
