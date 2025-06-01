@@ -21,7 +21,7 @@ public class ControladorPersonaje : MonoBehaviour
     public Vector2 sens = new Vector2(1f, 1f);
 
     //posecion de objetos
-    public bool barra = true;
+    public bool barra = false;
 
     // Start is called before the first frame update
     void Start()
