@@ -1,5 +1,5 @@
-
 using UnityEngine;
+using TMPro;
 
 public class ControladorPersonaje : MonoBehaviour
 {
@@ -19,13 +19,19 @@ public class ControladorPersonaje : MonoBehaviour
 
     public float rangoInteract;
 
+    public TextMeshProUGUI textInteraction;
+
     private new Transform camera;
     public Vector2 sens = new Vector2(1f, 1f);
+
+    private Vector3 centroPantalla;
+    private Ray ray;
+    private RaycastHit hit;
 
     //posecion de objetos
     public bool barra = false;
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -42,7 +48,6 @@ public class ControladorPersonaje : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
         if (other.gameObject.CompareTag("Barra"))
         {
             barra = true;
@@ -70,6 +75,24 @@ public class ControladorPersonaje : MonoBehaviour
 
             camera.localEulerAngles = Vector3.right * angle;
         }
+
+        centroPantalla = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+
+        ray = Camera.main.ScreenPointToRay(centroPantalla);
+
+        if (Physics.Raycast(ray, out hit, rangoInteract))
+        {
+            IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();
+            if (interactuable != null)
+            {
+                textInteraction.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            textInteraction.gameObject.SetActive(false);
+        }
+
     }
     
     public void Move()
@@ -108,13 +131,6 @@ public class ControladorPersonaje : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E)) 
         {
-            Vector3 centroPantalla = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
-
-            Vector3 mundoCentro = Camera.main.ScreenToWorldPoint(centroPantalla);
-
-            Ray ray = Camera.main.ScreenPointToRay(centroPantalla);
-            RaycastHit hit;
-
             if (Physics.Raycast(ray, out hit, rangoInteract))
             {
                 IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();

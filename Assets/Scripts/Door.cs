@@ -9,7 +9,7 @@ public class Door : MonoBehaviour, IInteractuable
     public float anguloFinal = 90f;
     public float velocidad = 1f;
 
-    private float anguloInicial = 0f;
+    public float anguloInicial = 0f;
     private float anguloActual;
 
     void Update()
