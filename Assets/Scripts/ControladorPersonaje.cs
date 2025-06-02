@@ -1,8 +1,13 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ControladorPersonaje : MonoBehaviour
 {
+    //muerte
+    public Animator armaAnimator;
+    private bool yaTermino = false;
+    public GameObject panelMuerte;
 
     //Movimiento
     [SerializeField] private float walkSpeed = 5f;
@@ -12,7 +17,7 @@ public class ControladorPersonaje : MonoBehaviour
 
     private Vector3 movementVelocity = Vector3.zero;
     private CharacterController characterController;
-    
+
     //Camara
     private float horizontalAxis;
     private float verticalAxis;
@@ -21,6 +26,7 @@ public class ControladorPersonaje : MonoBehaviour
 
     public TextMeshProUGUI textInteraction;
     public TextMeshProUGUI textBarra;
+    public TextMeshProUGUI textHazlo;
 
     private new Transform camera;
     public Vector2 sens = new Vector2(1f, 1f);
@@ -33,13 +39,15 @@ public class ControladorPersonaje : MonoBehaviour
     public bool barra = false;
 
     //arma
-
     public bool canon;
     public bool culata;
     public bool bala;
-    
+
+    public GameObject arma;
+
     void Start()
     {
+        panelMuerte.gameObject.SetActive(false);
         characterController = GetComponent<CharacterController>();
         camera = transform.Find("Camara");
         Cursor.lockState = CursorLockMode.Locked;
@@ -54,6 +62,7 @@ public class ControladorPersonaje : MonoBehaviour
         Move();
         Watch();
         Interact();
+        Disparo();
     }
 
     public void Watch()
@@ -99,7 +108,8 @@ public class ControladorPersonaje : MonoBehaviour
                         textBarra.gameObject.SetActive(true);
                     }
                 }
-            } else
+            }
+            else
             {
                 if (interactuable != null)
                 {
@@ -112,10 +122,22 @@ public class ControladorPersonaje : MonoBehaviour
         {
             textInteraction.gameObject.SetActive(false);
             textBarra.gameObject.SetActive(false);
+
+        }
+
+        if (canon && bala && culata)
+        {
+            arma.gameObject.SetActive(true);
+            textHazlo.gameObject.SetActive(true);
+        }
+        else
+        {
+            arma.gameObject.SetActive(false);
+            textHazlo.gameObject.SetActive(false);
         }
 
     }
-    
+
     public void Move()
     {
         //Sacamos las entradas
@@ -147,7 +169,7 @@ public class ControladorPersonaje : MonoBehaviour
 
         characterController.Move(movementVelocity * Time.deltaTime);
     }
-    
+
     public void Interact()
     {
         if (Input.GetKeyDown(KeyCode.E))
@@ -160,6 +182,27 @@ public class ControladorPersonaje : MonoBehaviour
                     interactuable.Interact();
                 }
             }
+        }
+    }
+
+    public void Disparo()
+    {
+        if (Input.GetMouseButton(0) && canon && culata && bala)
+        {
+            muerte();
+        }
+        else
+        {
+            armaAnimator.SetBool("Dispara", false);
+        }
+    }
+
+    public void muerte()
+    {
+        panelMuerte.gameObject.SetActive(true);
+        if (Input.anyKeyDown)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }
