@@ -10,7 +10,7 @@ public class ControladorPersonaje : MonoBehaviour
     public GameObject panelMuerte;
 
     //Movimiento
-    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] public float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float jumpHeight = 1.9f;
     [SerializeField] private float gravityScale = -20f;
